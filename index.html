@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7f5ef" />
+    <meta name="description" content="3岁幼儿15分钟家庭发展游戏跟练与观察记录" />
+    <meta property="og:title" content="妞妞家庭小游戏" />
+    <meta property="og:description" content="每天15分钟，照图跟练并记录观察。" />
+        <meta name="twitter:card" content="summary_large_image" />
+    <title>妞妞家庭小游戏</title>
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #f7f5ef;
+  --surface: #ffffff;
+  --ink: #20231f;
+  --muted: #666b64;
+  --line: #d9ddd5;
+  --green: #2f6b4f;
+  --green-soft: #e4f0e8;
+  --coral: #c85d4c;
+  --coral-soft: #f7e5df;
+  --yellow: #f1c35a;
+  --yellow-soft: #fff4cf;
+  --focus: #155d91;
+  --danger: #a83a31;
+  --shadow: 0 8px 24px rgba(36, 45, 38, 0.1);
+  font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  font-size: 17px;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--bg); }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--bg);
+  color: var(--ink);
+  letter-spacing: 0;
+}
+
+button,
+input,
+textarea { font: inherit; letter-spacing: 0; }
+
+button { -webkit-tap-highlight-color: transparent; }
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(21, 93, 145, 0.32);
+  outline-offset: 2px;
+}
+
+.app-shell {
+  width: min(100%, 720px);
+  min-height: 100vh;
+  margin: 0 auto;
+  background: var(--surface);
+  padding-bottom: calc(84px + env(safe-area-inset-bottom));
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: calc(18px + env(safe-area-inset-top)) 18px 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.week-label,
+.section-heading p,
+.page-heading > p {
+  margin: 0 0 3px;
+  color: var(--green);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+h1, h2, h3, p { letter-spacing: 0; }
+
+h1 { margin: 0; font-size: 1.28rem; line-height: 1.25; }
+h2 { margin: 0; font-size: 1.25rem; line-height: 1.35; }
+h3 { margin: 0; font-size: 1.06rem; line-height: 1.4; }
+
+.icon-button {
+  display: inline-grid;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.icon-button svg { width: 24px; height: 24px; }
+
+.view { display: none; }
+.view.active { display: block; }
+
+.safety-banner {
+  display: grid;
+  grid-template-columns: 25px auto 1fr;
+  align-items: center;
+  gap: 8px;
+  min-height: 54px;
+  padding: 10px 18px;
+  background: var(--yellow-soft);
+  border-bottom: 1px solid #edd58a;
+  color: #4c401f;
+}
+
+.safety-banner svg { width: 23px; color: var(--green); }
+.safety-banner strong { white-space: nowrap; }
+.safety-banner span { font-size: 0.88rem; line-height: 1.45; }
+
+.hero-media {
+  width: 100%;
+  height: clamp(220px, 47vw, 320px);
+  overflow: hidden;
+  background: #edf0e8;
+}
+
+.hero-media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 58%;
+}
+
+.day-picker-wrap,
+.materials-section,
+.steps-section,
+.plain-section,
+.saved-section { padding: 22px 18px; }
+
+.day-picker-wrap,
+.materials-section,
+.steps-section,
+.saved-section { border-bottom: 1px solid var(--line); }
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.section-heading.compact { margin-bottom: 12px; }
+
+.quiet-status {
+  color: var(--muted);
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+.segmented {
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f5f6f3;
+}
+
+.segmented button {
+  min-width: 0;
+  min-height: 46px;
+  padding: 8px 6px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.segmented button:last-child { border-right: 0; }
+.segmented button.active { background: var(--green); color: #fff; }
+
+.day-picker { grid-template-columns: repeat(5, 1fr); }
+.day-picker button { line-height: 1.2; font-size: 0.82rem; }
+.day-picker button span { display: block; font-size: 0.72rem; font-weight: 500; margin-top: 3px; }
+
+.day-summary {
+  padding: 20px 18px;
+  background: var(--green-soft);
+  border-bottom: 1px solid #c4d9cb;
+}
+
+.day-summary-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.day-summary h2 { font-size: 1.38rem; }
+.day-summary p { margin: 8px 0 0; color: #3f5548; line-height: 1.62; }
+
+.day-mark {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--green);
+  font-weight: 800;
+  border: 2px solid #b7d1c0;
+}
+
+.focus-note {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid #bfd3c5;
+  color: #334a3b;
+  font-weight: 700;
+}
+
+.focus-note svg { width: 21px; flex: 0 0 21px; }
+
+.check-list { display: grid; gap: 9px; }
+
+.check-item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+  cursor: pointer;
+}
+
+.check-item:last-child { border-bottom: 0; }
+.check-item input { width: 23px; height: 23px; accent-color: var(--green); }
+.check-item.checked span { color: var(--muted); text-decoration: line-through; }
+
+.steps-preview { display: grid; gap: 14px; padding-top: 4px; }
+
+.step-preview {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.step-visual,
+.session-step-visual {
+  background-image: var(--step-image);
+  background-position: var(--step-position) center;
+  background-repeat: no-repeat;
+  background-size: 500% 100%;
+}
+
+.step-visual {
+  width: 100%;
+  aspect-ratio: 3 / 5;
+  border-right: 1px solid var(--line);
+}
+
+.step-preview-body {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-content: center;
+  align-items: start;
+  gap: 6px 9px;
+  min-height: 72px;
+  padding: 12px 10px;
+}
+
+.step-number {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--coral-soft);
+  color: var(--coral);
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.step-preview-body .step-number {
+  grid-row: 1 / span 2;
+  width: 38px;
+  height: 38px;
+}
+
+.step-preview strong { display: block; line-height: 1.35; }
+.step-preview p { margin: 4px 0 0; color: var(--muted); font-size: 0.84rem; line-height: 1.45; }
+.step-minutes { grid-column: 2; color: var(--green); font-weight: 800; white-space: nowrap; }
+
+.camera-strip,
+.rest-day-band,
+.hearing-note {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 12px;
+  margin: 20px 18px;
+  padding: 16px;
+  border: 1px solid #dfc970;
+  border-radius: 6px;
+  background: var(--yellow-soft);
+}
+
+.camera-strip svg,
+.rest-day-band svg,
+.hearing-note svg { width: 26px; color: var(--green); }
+.camera-strip p,
+.rest-day-band p,
+.hearing-note p { margin: 5px 0 0; color: #5c5338; font-size: 0.88rem; line-height: 1.55; }
+
+.primary-action {
+  display: flex;
+  width: calc(100% - 36px);
+  min-height: 58px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 18px 28px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--coral);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  box-shadow: 0 5px 0 #984739;
+  cursor: pointer;
+}
+
+.primary-action:active { transform: translateY(2px); box-shadow: 0 3px 0 #984739; }
+.primary-action svg { width: 23px; }
+
+.page-heading {
+  padding: 24px 18px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.page-heading h2 { font-size: 1.5rem; }
+.page-heading span { display: block; margin-top: 8px; color: var(--muted); line-height: 1.55; }
+
+.week-plan { padding: 4px 18px 14px; }
+
+.week-item {
+  display: grid;
+  grid-template-columns: 54px 1fr 28px;
+  align-items: center;
+  gap: 12px;
+  min-height: 84px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.week-item .day-mark { width: 48px; height: 48px; font-size: 0.88rem; }
+.week-item h3 { font-size: 1rem; }
+.week-item p { margin: 5px 0 0; color: var(--muted); font-size: 0.84rem; line-height: 1.45; }
+.week-item svg { color: var(--muted); width: 22px; }
+.week-item.complete .day-mark { background: var(--green); color: #fff; border-color: var(--green); }
+
+.record-form { padding: 10px 18px 16px; }
+
+.record-form label,
+.record-form fieldset {
+  display: block;
+  margin: 0;
+  padding: 17px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.record-form label > span,
+.record-form legend {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.field-row { display: grid !important; grid-template-columns: auto 1fr; align-items: center; gap: 16px; }
+.field-row > span { margin: 0 !important; }
+
+.record-form input,
+.record-form textarea {
+  width: 100%;
+  border: 1px solid #bfc4bd;
+  border-radius: 5px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.record-form input { min-height: 48px; padding: 8px 12px; }
+.record-form textarea { min-height: 82px; padding: 12px; resize: vertical; line-height: 1.5; }
+.record-form .primary-action { width: 100%; margin: 22px 0 8px; }
+
+.record-days { grid-template-columns: repeat(5, 1fr); }
+.three-options { grid-template-columns: repeat(3, 1fr); }
+.two-options { grid-template-columns: repeat(2, 1fr); }
+.four-options { grid-template-columns: repeat(4, 1fr); }
+.four-options button { font-size: 0.86rem; }
+
+.records-list { display: grid; gap: 12px; }
+
+.record-card {
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.record-card-head { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.record-card-head strong { color: var(--green); }
+.record-card dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; margin: 14px 0; font-size: 0.88rem; line-height: 1.45; }
+.record-card dt { color: var(--muted); }
+.record-card dd { margin: 0; }
+.record-actions { display: grid; grid-template-columns: 1fr 48px; gap: 9px; }
+
+.copy-action,
+.delete-action {
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #f5f6f3;
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.copy-action { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.delete-action { display: grid; place-items: center; color: var(--danger); }
+.copy-action svg, .delete-action svg { width: 20px; }
+
+.empty-state { padding: 22px 0; color: var(--muted); text-align: center; }
+
+.stop-list { padding: 12px 18px 6px; }
+.stop-list div { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: center; min-height: 60px; border-bottom: 1px solid var(--line); }
+.stop-list svg { width: 23px; color: var(--danger); }
+
+.plain-section h3 { margin-bottom: 14px; }
+.avoid-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+.avoid-grid span { padding: 12px; border: 1px solid #e5b5af; border-radius: 5px; background: #fff4f2; color: #78332c; text-align: center; font-weight: 700; }
+.hearing-note { border-color: #b8cfbf; background: var(--green-soft); }
+.hearing-note p { color: #3f5548; }
+
+.bottom-nav {
+  position: fixed;
+  z-index: 20;
+  bottom: 0;
+  left: 50%;
+  display: grid;
+  width: min(100%, 720px);
+  grid-template-columns: repeat(4, 1fr);
+  transform: translateX(-50%);
+  padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.bottom-nav button {
+  display: grid;
+  min-width: 0;
+  min-height: 58px;
+  place-items: center;
+  align-content: center;
+  gap: 3px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.bottom-nav button svg { width: 23px; height: 23px; }
+.bottom-nav button.active { color: var(--green); font-weight: 800; }
+
+.session-dialog {
+  width: min(100%, 720px);
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.session-dialog::backdrop { background: rgba(18, 25, 20, 0.62); }
+
+.session-topbar {
+  display: grid;
+  grid-template-columns: 46px 1fr 46px;
+  align-items: center;
+  gap: 10px;
+  padding: calc(12px + env(safe-area-inset-top)) 14px 10px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.session-topbar > div { text-align: center; }
+.session-topbar span { display: block; color: var(--green); font-size: 0.76rem; font-weight: 800; }
+.session-topbar strong { display: block; margin-top: 2px; font-size: 0.9rem; }
+
+.session-progress { height: 7px; background: #dfe4dd; }
+.session-progress span { display: block; width: 20%; height: 100%; background: var(--coral); transition: width 180ms ease; }
+
+.session-content {
+  display: flex;
+  min-height: calc(100dvh - 82px);
+  flex-direction: column;
+  align-items: center;
+  padding: 22px 18px calc(22px + env(safe-area-inset-bottom));
+  text-align: center;
+}
+
+.session-step-visual {
+  width: min(46vw, 200px);
+  aspect-ratio: 3 / 5;
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background-color: #f4f1e8;
+}
+
+.step-icon-large {
+  display: grid;
+  width: 76px;
+  height: 76px;
+  place-items: center;
+  border: 2px solid #c5d8ca;
+  border-radius: 50%;
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.step-icon-large svg { width: 36px; height: 36px; }
+.step-time-label { margin: 12px 0 4px; color: var(--coral); font-size: 0.88rem; font-weight: 800; }
+.session-content h2 { font-size: 1.75rem; }
+.step-action { max-width: 560px; margin: 10px 0 18px; color: #3e433e; font-size: 1.05rem; line-height: 1.65; }
+
+.say-box,
+.watch-box {
+  width: 100%;
+  max-width: 590px;
+  padding: 14px 16px;
+  border-left: 5px solid var(--coral);
+  background: var(--coral-soft);
+  text-align: left;
+}
+
+.watch-box { margin-top: 10px; border-left-color: var(--green); background: var(--green-soft); }
+.say-box span, .watch-box span { color: var(--muted); font-size: 0.75rem; font-weight: 800; }
+.say-box p, .watch-box p { margin: 5px 0 0; font-weight: 700; line-height: 1.55; }
+
+.timer-display {
+  margin: auto 0 14px;
+  padding-top: 20px;
+  font-variant-numeric: tabular-nums;
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.timer-controls {
+  display: grid;
+  width: 100%;
+  max-width: 590px;
+  grid-template-columns: minmax(78px, 1fr) minmax(128px, 1.4fr) minmax(78px, 1fr);
+  gap: 8px;
+}
+
+.secondary-action,
+.timer-action {
+  display: flex;
+  min-width: 0;
+  min-height: 56px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 6px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.secondary-action { border: 1px solid var(--line); background: #fff; color: var(--ink); }
+.timer-action { border: 0; background: var(--coral); color: #fff; }
+.secondary-action:disabled { opacity: 0.4; cursor: default; }
+.secondary-action svg, .timer-action svg { width: 21px; flex: 0 0 21px; }
+
+.toast {
+  position: fixed;
+  z-index: 50;
+  left: 50%;
+  bottom: calc(94px + env(safe-area-inset-bottom));
+  width: max-content;
+  max-width: calc(100% - 40px);
+  transform: translate(-50%, 14px);
+  padding: 11px 15px;
+  border-radius: 5px;
+  background: #20231f;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: 160ms ease;
+  font-size: 0.88rem;
+}
+
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+body.large-text { font-size: 20px; }
+body.large-text .bottom-nav button { font-size: 0.72rem; }
+body.large-text .day-picker button { font-size: 0.8rem; }
+
+@media (min-width: 721px) {
+  body { padding: 24px 0; }
+  .app-shell { min-height: calc(100vh - 48px); box-shadow: var(--shadow); }
+  .bottom-nav { bottom: 24px; }
+  .session-dialog { height: calc(100dvh - 48px); margin: 24px auto; }
+  .session-content { min-height: calc(100dvh - 130px); }
+}
+
+@media (max-width: 380px) {
+  :root { font-size: 16px; }
+  .topbar { padding-left: 14px; padding-right: 14px; }
+  .day-picker-wrap, .materials-section, .steps-section, .plain-section, .saved-section { padding-left: 14px; padding-right: 14px; }
+  .safety-banner { grid-template-columns: 24px 1fr; }
+  .safety-banner span { grid-column: 2; }
+  .session-content { padding-left: 14px; padding-right: 14px; }
+  .timer-controls { grid-template-columns: 1fr 1.25fr 1fr; }
+  .secondary-action span { font-size: 0.78rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+}
+
+</style>
+    <script defer src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script defer>
+const embeddedStepImages = {"1": "data:image/webp;base64,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…58029 tokens truncated…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" alt="老人陪三岁孩子在客厅推洗衣篮、走胶带路线的安全家庭游戏" />
+          </div>
+
+          <div class="day-picker-wrap">
+            <div class="section-heading compact">
+              <div>
+                <p>选择训练日</p>
+                <h2 id="todayTitle">今天玩哪一组</h2>
+              </div>
+              <span id="completionCount" class="quiet-status">0/5次</span>
+            </div>
+            <div id="dayPicker" class="segmented day-picker" role="tablist" aria-label="选择训练日"></div>
+          </div>
+
+          <section id="daySummary" class="day-summary"></section>
+
+          <section class="materials-section" aria-labelledby="materialsTitle">
+            <div class="section-heading">
+              <div>
+                <p>开始前摆好</p>
+                <h2 id="materialsTitle">今天需要的东西</h2>
+              </div>
+              <button id="readMaterials" class="icon-button" type="button" aria-label="朗读材料清单" title="朗读材料清单">
+                <i data-lucide="volume-2"></i>
+              </button>
+            </div>
+            <div id="materialsList" class="check-list"></div>
+          </section>
+
+          <section class="steps-section" aria-labelledby="stepsTitle">
+            <div class="section-heading">
+              <div>
+                <p>共15分钟</p>
+                <h2 id="stepsTitle">照着顺序做</h2>
+              </div>
+            </div>
+            <div id="stepsPreview" class="steps-preview"></div>
+          </section>
+
+          <section class="camera-strip">
+            <i data-lucide="video"></i>
+            <div>
+              <strong>手机竖着固定，离孩子约3米</strong>
+              <p>拍到全身和地面即可，不用让孩子对镜头表演。</p>
+            </div>
+          </section>
+
+          <button id="startSession" class="primary-action" type="button">
+            <i data-lucide="play"></i>
+            开始15分钟跟练
+          </button>
+        </section>
+
+        <section id="weekView" class="view" aria-labelledby="weekTitle">
+          <div class="page-heading">
+            <p>第一阶段 · 7天</p>
+            <h2 id="weekTitle">一周安排</h2>
+            <span>做5次，另外2天只安排户外和自由游戏。</span>
+          </div>
+          <div id="weekPlan" class="week-plan"></div>
+          <div class="rest-day-band">
+            <i data-lucide="trees"></i>
+            <div>
+              <strong>第4天、第6天</strong>
+              <p>不做结构化练习。正常户外活动、自由游戏和亲子共读。</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="recordView" class="view" aria-labelledby="recordTitle">
+          <div class="page-heading">
+            <p>做完马上记</p>
+            <h2 id="recordTitle">观察记录</h2>
+            <span>只记录事实，不给孩子打分。</span>
+          </div>
+
+          <form id="recordForm" class="record-form">
+            <label class="field-row">
+              <span>日期</span>
+              <input id="recordDate" type="date" required />
+            </label>
+
+            <fieldset>
+              <legend>今天做的是</legend>
+              <div id="recordDayPicker" class="segmented record-days"></div>
+            </fieldset>
+
+            <fieldset>
+              <legend>睡眠和精神</legend>
+              <div class="segmented three-options" data-field="energy">
+                <button type="button" data-value="好">好</button>
+                <button type="button" data-value="一般">一般</button>
+                <button type="button" data-value="差">差</button>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>怎么开始参加的</legend>
+              <div class="segmented three-options" data-field="participation">
+                <button type="button" data-value="主动参加">主动</button>
+                <button type="button" data-value="提醒后参加">提醒后</button>
+                <button type="button" data-value="拒绝">拒绝</button>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>完成任务需要提示</legend>
+              <div class="segmented three-options" data-field="prompts">
+                <button type="button" data-value="0次">0次</button>
+                <button type="button" data-value="1-2次">1—2次</button>
+                <button type="button" data-value="3次以上">3次以上</button>
+              </div>
+            </fieldset>
+
+            <label>
+              <span>最顺利的动作</span>
+              <textarea id="bestAction" rows="2" placeholder="例如：自己推完两趟洗衣篮"></textarea>
+            </label>
+
+            <label>
+              <span>最困难的动作</span>
+              <textarea id="hardAction" rows="2" placeholder="例如：走胶带线时总踩到外面"></textarea>
+            </label>
+
+            <fieldset>
+              <legend>孩子还想再玩吗</legend>
+              <div class="segmented two-options" data-field="again">
+                <button type="button" data-value="想">想</button>
+                <button type="button" data-value="不想">不想</button>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>结束后的状态</legend>
+              <div class="segmented four-options" data-field="afterState">
+                <button type="button" data-value="平静">平静</button>
+                <button type="button" data-value="兴奋">兴奋</button>
+                <button type="button" data-value="烦躁">烦躁</button>
+                <button type="button" data-value="疲劳">疲劳</button>
+              </div>
+            </fieldset>
+
+            <label>
+              <span>家长想确认的问题</span>
+              <textarea id="parentQuestion" rows="3" placeholder="例如：投球总用一只手，需要调整吗？"></textarea>
+            </label>
+
+            <button class="primary-action" type="submit">
+              <i data-lucide="save"></i>
+              保存这次记录
+            </button>
+          </form>
+
+          <section class="saved-section" aria-labelledby="savedTitle">
+            <div class="section-heading">
+              <div>
+                <p>保存在这台手机</p>
+                <h2 id="savedTitle">已有记录</h2>
+              </div>
+            </div>
+            <div id="recordsList" class="records-list"></div>
+          </section>
+        </section>
+
+        <section id="safetyView" class="view" aria-labelledby="safetyTitle">
+          <div class="page-heading">
+            <p>先安全，再训练</p>
+            <h2 id="safetyTitle">这些情况马上停</h2>
+            <span>家庭游戏不能代替儿童保健、听力筛查或专业评估。</span>
+          </div>
+
+          <div class="stop-list">
+            <div><i data-lucide="circle-stop"></i><span>脸色发白、头晕、恶心或疼痛</span></div>
+            <div><i data-lucide="circle-stop"></i><span>连续摔倒，和平时明显不同</span></div>
+            <div><i data-lucide="circle-stop"></i><span>哭闹、逃开或明确说不玩</span></div>
+            <div><i data-lucide="circle-stop"></i><span>活动后异常兴奋、疲倦或很久不能平静</span></div>
+          </div>
+
+          <section class="plain-section">
+            <h3>第一阶段不要做</h3>
+            <div class="avoid-grid">
+              <span>强烈旋转</span>
+              <span>倒挂悬吊</span>
+              <span>高处跳跃</span>
+              <span>触觉刷</span>
+              <span>负重背心</span>
+              <span>听觉训练方案</span>
+            </div>
+          </section>
+
+          <section class="hearing-note">
+            <i data-lucide="ear"></i>
+            <div>
+              <h3>关于听觉反应</h3>
+              <p>不要在背后突然叫孩子来“测试”。如果在日常多个环境中经常听不到名字、声音或熟悉指令，或者出现语言倒退，应安排儿童保健和正规听力筛查。</p>
+            </div>
+          </section>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="页面导航">
+        <button class="active" type="button" data-view="todayView">
+          <i data-lucide="house"></i><span>今天</span>
+        </button>
+        <button type="button" data-view="weekView">
+          <i data-lucide="calendar-days"></i><span>周计划</span>
+        </button>
+        <button type="button" data-view="recordView">
+          <i data-lucide="clipboard-pen-line"></i><span>记录</span>
+        </button>
+        <button type="button" data-view="safetyView">
+          <i data-lucide="shield-alert"></i><span>安全</span>
+        </button>
+      </nav>
+    </div>
+
+    <dialog id="sessionDialog" class="session-dialog">
+      <div class="session-topbar">
+        <button id="closeSession" class="icon-button" type="button" aria-label="退出跟练" title="退出跟练">
+          <i data-lucide="x"></i>
+        </button>
+        <div>
+          <span id="sessionDayLabel">第1天</span>
+          <strong id="sessionProgressLabel">第1步，共5步</strong>
+        </div>
+        <button id="readStep" class="icon-button" type="button" aria-label="朗读当前步骤" title="朗读当前步骤">
+          <i data-lucide="volume-2"></i>
+        </button>
+      </div>
+
+      <div class="session-progress"><span id="sessionProgressBar"></span></div>
+
+      <div class="session-content">
+        <div id="sessionStepVisual" class="session-step-visual" role="img" aria-label="当前动作示意图"></div>
+        <div id="stepIcon" class="step-icon-large"></div>
+        <p id="stepTimeLabel" class="step-time-label">2分钟</p>
+        <h2 id="stepTitle">先选一个</h2>
+        <p id="stepAction" class="step-action"></p>
+
+        <div class="say-box">
+          <span>老人这样说</span>
+          <p id="stepSay"></p>
+        </div>
+
+        <div class="watch-box">
+          <span>只看这一点</span>
+          <p id="stepWatch"></p>
+        </div>
+
+        <div id="timerDisplay" class="timer-display">02:00</div>
+        <div class="timer-controls">
+          <button id="previousStep" class="secondary-action" type="button">
+            <i data-lucide="chevron-left"></i><span>上一步</span>
+          </button>
+          <button id="timerToggle" class="timer-action" type="button">
+            <i data-lucide="play"></i><span>开始计时</span>
+          </button>
+          <button id="nextStep" class="secondary-action" type="button">
+            <span>下一步</span><i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
